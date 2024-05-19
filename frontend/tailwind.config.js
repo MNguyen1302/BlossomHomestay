@@ -8,15 +8,24 @@ export default {
       extend: {
         backgroundImage: {
             'background_register': "url('./src/assets/background_img.jpg')",
+            'slide': "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./src/assets/slide.jpg')",
         },
         fontSize: {
-            'max-1': 'max(1vw, 13px)',
-            'max-2': 'max(4.5vw, 22px)',
-            'max-3': 'max(1.4vw, 16px)'
+          'max-1': 'max(1vw, 13px)',
+          'max-2': 'max(4.5vw, 22px)',
+          'max-3': 'max(1.4vw, 16px)'
         },
         transitionDuration: {
             '2000': '2000ms',
+            '3000': '3000ms',
         },
+        screens: {
+          '2xl': {'max': '1536px'},
+          'xl': {'max': '1280px'},
+          'lg': {'max': '1024px'},
+          'md': {'max': '768px'},
+          'sm': {'max': '640px'},
+        }
       },
     },
     plugins: [],

@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authApi from "../apis/modules/auth.api";
+import { useDispatch } from "react-redux";
+import { setLogin } from "../redux/state";
 
 const LoginPage = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({
@@ -21,10 +26,16 @@ const LoginPage = () => {
 
     try {
       const response = await authApi.login(data);
-      console.log(response);
-      // if (response.status === 200) {
-      //   navigate("/home");
-      // }
+
+      if (response.status === 200) {
+        dispatch(
+          setLogin({
+            user: response.user,
+            token: response.token,
+          })
+        );
+        navigate("/");
+      }
     } catch (error) {
       console.log(error.message);
     }

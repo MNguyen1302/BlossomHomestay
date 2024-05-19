@@ -1,72 +1,102 @@
-import { useState } from "react";
-import logo from "../assets/logo.jpg";
+import React, { useState } from "react";
+import logo from "../assets/logo.png";
 import { IoSearchOutline } from "react-icons/io5";
-import { FaCartShopping } from "react-icons/fa6";
-import { IconContext } from "react-icons";
+import { Menu, Person } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { setLogout } from "../redux/state";
 
-const NavBar = () => {
-  const [menu, setMenu] = useState("home");
+const Navbar = () => {
+  const [dropdownMenu, setDropdownMenu] = useState(false);
+  const user = useSelector((state) => state.user);
 
+  const dispatch = useDispatch();
   return (
-    <div className="flex justify-between items-center ">
-      <img src={logo} width="100px" height="100px" alt="" />
-      <ul className="flex gap-5 text-base">
-        <li
-          onClick={() => setMenu("home")}
-          className={
-            menu === "home"
-              ? "pb-1 border-b-2 border-solid border-slate-700"
-              : ""
-          }
-        >
-          Home
-        </li>
-        <li
-          onClick={() => setMenu("menu")}
-          className={
-            menu === "menu"
-              ? "pb-1 border-b-2 border-solid border-slate-700"
-              : ""
-          }
-        >
-          Menu
-        </li>
-        <li
-          onClick={() => setMenu("about")}
-          className={
-            menu === "about"
-              ? "pb-1 border-b-2 border-solid border-slate-700"
-              : ""
-          }
-        >
-          About
-        </li>
-        <li
-          onClick={() => setMenu("contact-us")}
-          className={
-            menu === "contact-us"
-              ? "pb-1 border-b-2 border-solid border-slate-700"
-              : ""
-          }
-        >
-          Contact Us
-        </li>
-      </ul>
+    <div className="px-14 py-3 flex justify-between items-center relative sm:px-5">
+      <a href="/">
+        <img className="w-[100px] cursor-pointer" src={logo} alt="Logo" />
+      </a>
 
-      <div className="flex items-center gap-10">
-        <IconContext.Provider value={{ size: 25 }}>
-          <IoSearchOutline />
-          <div className="relative">
-            <FaCartShopping />
-            <div className="absolute min-w-3 min-h-3 bg-green-400 rounded-md -top-3 -right-2"></div>
-          </div>
-        </IconContext.Provider>
-        <button className="bg-transparent text-base px-8 py-3 cursor-pointer border rounded-full border-solid border-slate-700 hover:border-green-400 duration-1000 ">
-          Sign In
+      <div className="border border-solid border-gray-300 rounded-3xl h-[50px] px-5 flex gap-10 items-center lg:hidden">
+        <input
+          className="border-none outline-none"
+          type="text"
+          placeholder="Search..."
+        />
+        <IoSearchOutline />
+      </div>
+
+      <div className="flex items-center gap-5 sm:hidden">
+        <a
+          href={user ? "/create-homestay" : "/login"}
+          className="cursor-pointer"
+        >
+          Become A Host
+        </a>
+        <button
+          className="h-[50px] flex items-center px-3 border border-solid border-gray-300 rounded-3xl bg-white cursor-pointer gap-3 sm:hidden"
+          onClick={() => setDropdownMenu(!dropdownMenu)}
+        >
+          <Menu sx={{ color: "#949494" }} />
+          {!user ? (
+            <Person sx={{ color: "#949494" }} />
+          ) : (
+            <img
+              className="bg-cover rounded-full w-10 h-10"
+              src={user.avatar}
+              alt="Avatar"
+            />
+          )}
         </button>
+
+        {dropdownMenu && !user && (
+          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-50 sm:right-5">
+            <Link className="w-[100%] px-4 py-2 no-underline" to="/login">
+              Login
+            </Link>
+            <Link className="w-[100%] px-4 py-2 no-underline" to="/register">
+              Register
+            </Link>
+          </div>
+        )}
+
+        {dropdownMenu && user && (
+          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-50 sm:right-5">
+            <Link className="w-[100%] px-4 py-2 no-underline" to="/trip-list">
+              Trip List
+            </Link>
+            <Link className="w-[100%] px-4 py-2 no-underline" to="/wish-list">
+              Wish List
+            </Link>
+            <Link
+              className="w-[100%] px-4 py-2 no-underline"
+              to="/property-list"
+            >
+              Property List
+            </Link>
+            <Link
+              className="w-[100%] px-4 py-2 no-underline"
+              to="/reservation-list"
+            >
+              Reservation List
+            </Link>
+            <Link className="w-[100%] px-4 py-2 no-underline" to="/become-host">
+              Reservation List
+            </Link>
+            <Link
+              className="w-[100%] px-4 py-2 no-underline"
+              to="/login"
+              onClick={() => {
+                dispatch(setLogout());
+              }}
+            >
+              Logout
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default NavBar;
+export default Navbar;
