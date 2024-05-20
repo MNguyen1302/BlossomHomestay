@@ -9,7 +9,10 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET
 })
 
-export const uploadToCloudinary = (file) => {
+export const uploadToCloudinary = async (file) => {
+    // const result = await cloudinary.v2.uploader.upload(file.path)
+    // fs.unlinkSync(file.path)
+    // return result.secure_url
     return new Promise((resolve, reject) => {
         cloudinary.v2.uploader.upload(file.path, (err, url) => {
             if (err) return reject(err)

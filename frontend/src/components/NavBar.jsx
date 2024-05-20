@@ -27,10 +27,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-5 sm:hidden">
-        <a
-          href={user ? "/create-homestay" : "/login"}
-          className="cursor-pointer"
-        >
+        <a href={user ? "/create-place" : "/login"} className="cursor-pointer">
           Become A Host
         </a>
         <button

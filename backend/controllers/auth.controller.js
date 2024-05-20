@@ -1,7 +1,6 @@
 import User from "../models/user.model.js"
 import bcryptjs from "bcryptjs"
 import jwt from "jsonwebtoken"
-import multer from "multer"
 import { uploadToCloudinary } from "../services/cloudinary.js"
 
 const register = async (req, res) => {

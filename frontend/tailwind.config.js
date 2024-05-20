@@ -23,8 +23,13 @@ export default {
           '2xl': {'max': '1536px'},
           'xl': {'max': '1280px'},
           'lg': {'max': '1024px'},
-          'md': {'max': '768px'},
-          'sm': {'max': '640px'},
+          'ml': {'max': '820px'},
+          'md': {'max': '720px'},
+          'mm': {'max': '580px'},
+          'sm': {'max': '480px'},
+        },
+        gridTemplateColumns: {
+          '1-1': '1fr 1fr'
         }
       },
     },
