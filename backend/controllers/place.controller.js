@@ -68,13 +68,12 @@ const createPlace = async (req, res) => {
 
 const getPlacesByCategory = async (req, res) => {
     const qCategory = req.query.category
-
     try {
         let places
         if (qCategory) {
             places = await Place.find({ category: qCategory }).populate("creator")
         } else {
-            places = await Place.find()
+            places = await Place.find().populate("creator")
         }
 
         res.status(200).json(places)
@@ -83,7 +82,20 @@ const getPlacesByCategory = async (req, res) => {
     }
 }
 
+const getDetail = async (req, res) => {
+    try {
+        const { placeId } = req.params
+
+        const place = await Place.findById(placeId).populate("creator")
+
+        res.status(200).json(place)
+    } catch (error) {
+        res.status(500).json({status: 500, message: "Fail to fetch places!", error: err.message})
+    }
+}
+
 export default { 
     createPlace,
-    getPlacesByCategory
+    getPlacesByCategory,
+    getDetail
 };

@@ -30,6 +30,9 @@ export default {
         },
         gridTemplateColumns: {
           '1-1': '1fr 1fr'
+        },
+        flex: {
+          '0': '0 0 100%'
         }
       },
     },

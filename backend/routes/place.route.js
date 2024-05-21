@@ -22,4 +22,6 @@ router.post("/create", upload.array("listingPhotos"), placeController.createPlac
 
 router.get("/", placeController.getPlacesByCategory)
 
+router.get("/:placeId", placeController.getDetail)
+
 export default router;
