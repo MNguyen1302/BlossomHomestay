@@ -1,6 +1,7 @@
 import Place from "../models/place.model.js"
 import { uploadToCloudinary } from "../services/cloudinary.js"
 
+
 const createPlace = async (req, res) => {
     try {
         const { 
@@ -89,7 +90,7 @@ const getDetail = async (req, res) => {
         const place = await Place.findById(placeId).populate("creator")
 
         res.status(200).json(place)
-    } catch (error) {
+    } catch (err) {
         res.status(500).json({status: 500, message: "Fail to fetch places!", error: err.message})
     }
 }

@@ -2,8 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user: null,
-    token: null,
-    listings: []
+    listings: [],
+    bookingPlace: null,
+    paymentIntentId: null,
+    clientSecret: undefined
 }
 
 export const userSlice = createSlice({
@@ -11,8 +13,14 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         setLogin: (state, action) => {
-            state.user = action.payload.user,
-            state.token = action.payload.token
+            if(action.payload === null) {
+                localStorage.removeItem("token")
+            } else {
+                if(action.payload.token)
+                    localStorage.setItem("token", action.payload.token)
+            }
+
+            state.user = action.payload.user
         },
         setLogout: (state, action) => {
             state.user = null,
@@ -20,9 +28,26 @@ export const userSlice = createSlice({
         },
         setListings: (state, action) => {
             state.listings = action.payload
+        },
+        setWishList: (state, action) => {
+            state.user.wishList = action.payload
+        },
+        setBookingPlace: (state, action) => {
+            state.bookingPlace = action.payload
+        },
+        setClientSecret: (state, action) => {
+            state.clientSecret = action.payload
+        },
+        setPaymentIntentId: (state, action) => {
+            state.paymentIntentId = action.payload
+        },
+        resetBookPlace: (state, action) => {
+            state.clientSecret = undefined
+            state.paymentIntentId = null
+            state.bookingPlace = null
         }
     }
 })
 
-export const { setLogin, setLogout, setListings } = userSlice.actions
+export const { setLogin, setLogout, setListings, setClientSecret, setBookingPlace, setPaymentIntentId, resetBookPlace, setWishList } = userSlice.actions
 export default userSlice.reducer

@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import CreatePlace from "./pages/CreatePlace";
 import PlaceDetail from "./pages/PlaceDetail";
+import BookingPlace from "./pages/BookingPlace";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/create-place" element={<CreatePlace />} />
         <Route path="/place/:placeId" element={<PlaceDetail />} />
+        <Route path="/booking" element={<BookingPlace />} />
       </Routes>
     </div>
   );

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { ArrowBackIosNew, ArrowForwardIos } from "@mui/icons-material";
 import { MdOutlineFavorite, MdFavoriteBorder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import userApi from "../apis/modules/user.api";
+import { useDispatch, useSelector } from "react-redux";
+import { setWishList } from "../redux/state";
 
 const ListingCard = ({
   listingId,
@@ -16,19 +19,33 @@ const ListingCard = ({
   price,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFavourite, setIsFavourite] = useState(false);
+
+  const user = useSelector((state) => state.user);
+  const wishList = user?.wishList || [];
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const goToPrevSlide = (e) => {
+  const isFavourite = wishList.find((item) => item?._id === listingId);
+  console.log(user);
+  const goToPrevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
         (prevIndex - 1 + listingPhotos.length) % listingPhotos.length
     );
   };
 
-  const goToNextSlide = (e) => {
+  const goToNextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % listingPhotos.length);
+  };
+
+  const handleFavourite = async () => {
+    try {
+      const response = await userApi.addToWishList(listingId);
+      dispatch(setWishList(response.wishList));
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div
@@ -55,18 +72,31 @@ const ListingCard = ({
               <div className="absolute top-[50%] rounded-full p-[5px] -translate-y-2/4 border-none cursor-pointer flex items-center justify-center bg-[rgba(255,255,255,0.7)] z-[999] left-[10px] hover:bg-white text-base">
                 <ArrowBackIosNew
                   sx={{ fontSize: "20px" }}
-                  onClick={(e) => goToPrevSlide(e)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPrevSlide(e);
+                  }}
                 />
               </div>
               <div className="absolute top-[50%] rounded-full p-[5px] -translate-y-2/4 border-none cursor-pointer flex items-center justify-center bg-[rgba(255,255,255,0.7)] z-[999] right-[10px] hover:bg-white text-base">
                 <ArrowForwardIos
                   sx={{ fontSize: "20px" }}
-                  onClick={(e) => goToNextSlide(e)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToNextSlide(e);
+                  }}
                 />
               </div>
-              <div className="absolute right-5 top-5 border-none text-2xl text-white cursor-pointer z-[999] bg-none">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFavourite();
+                }}
+                disabled={!user}
+                className="absolute right-5 top-5 border-none text-2xl text-white cursor-pointer z-[999] bg-none"
+              >
                 {isFavourite ? <MdOutlineFavorite /> : <MdFavoriteBorder />}
-              </div>
+              </button>
             </div>
           ))}
         </div>

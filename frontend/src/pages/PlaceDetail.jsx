@@ -1,18 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import placeApi from "../apis/modules/place.api";
+import bookingApi from "../apis/modules/booking.api";
 import { facilities } from "../configs/categories";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
+import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  setBookingPlace,
+  setClientSecret,
+  setPaymentIntentId,
+} from "../redux/state";
+import { eachDayOfInterval } from "date-fns";
 
 const PlaceDetail = () => {
   const [loading, setLoading] = useState(true);
   const [place, setPlace] = useState(null);
+  const [bookings, setBookings] = useState([]);
 
   const { placeId } = useParams();
+
+  const userId = useSelector((state) => state.user?._id);
+  const paymentIntentId = useSelector((state) => state.paymentIntentId);
+
+  const dispatch = useDispatch();
 
   const getPlaceDetail = async () => {
     try {
@@ -24,8 +40,18 @@ const PlaceDetail = () => {
     }
   };
 
+  const getBookings = async () => {
+    try {
+      const response = await bookingApi.getBookingByPlace(placeId);
+      setBookings(response.bookings);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getPlaceDetail();
+    getBookings();
   }, []);
 
   const [dateRange, setDateRange] = useState([
@@ -43,6 +69,53 @@ const PlaceDetail = () => {
   const start = new Date(dateRange[0].startDate);
   const end = new Date(dateRange[0].endDate);
   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
+
+  const navigate = useNavigate();
+
+  const handleBookRoom = async () => {
+    if (!userId) {
+      toast.error("Make sure you are logged in");
+      return;
+    }
+
+    if (!place.creator._id) {
+      toast.error("Something went wrong, refresh the page and try again");
+      return;
+    }
+
+    if (dayCount > 0) {
+      const bookingRoomData = {
+        hostId: place.creator._id,
+        placeId: place._id,
+        startDate: dateRange[0].startDate.toDateString(),
+        endDate: dateRange[0].endDate.toDateString(),
+        totalPrice: place.price * dayCount,
+        payment_intent_id: paymentIntentId,
+      };
+      const response = await bookingApi.createPayment(bookingRoomData);
+      dispatch(setPaymentIntentId(response.paymentIntent.id));
+      dispatch(setClientSecret(response.paymentIntent.client_secret));
+      bookingRoomData.place = place;
+      dispatch(setBookingPlace(bookingRoomData));
+      navigate(`/booking`);
+    } else {
+      toast.error("Pls select date");
+    }
+  };
+
+  const disabledDates = useMemo(() => {
+    let dates = [];
+    console.log(bookings);
+    bookings.forEach((booking) => {
+      const range = eachDayOfInterval({
+        start: new Date(booking.startDate),
+        end: new Date(booking.endDate),
+      });
+
+      dates = [...dates, ...range];
+    });
+    return dates;
+  }, [bookings]);
 
   return loading ? (
     <Loader />
@@ -119,7 +192,12 @@ const PlaceDetail = () => {
               How long do you want to stay?
             </h2>
             <div className="my-[30px]">
-              <DateRange ranges={dateRange} onChange={handleSelect} />
+              <DateRange
+                ranges={dateRange}
+                onChange={handleSelect}
+                disabledDates={disabledDates}
+                disabledDay={(date) => date < new Date()}
+              />
               {dayCount > 1 ? (
                 <h2 className="mb-[10px] text-2xl font-medium">
                   ${place.price} x {dayCount} nights
@@ -142,12 +220,14 @@ const PlaceDetail = () => {
               <button
                 className="mt-[30px] w-[100%] bg-blue-400 text-white p-[15px] rounded-xl lg:max-w-[300px]"
                 type="submit"
+                onClick={handleBookRoom}
               >
                 Booking
               </button>
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

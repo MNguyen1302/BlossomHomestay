@@ -1,5 +1,5 @@
 import jsonwebtoken from "jsonwebtoken";
-import userModel from "../models/user.model.js";
+import User from "../models/user.model.js";
 
 const tokenDecode = (req) => {
   try {
@@ -10,7 +10,7 @@ const tokenDecode = (req) => {
 
       return jsonwebtoken.verify(
         token,
-        process.env.TOKEN_SECRET
+        process.env.JWT_SECRET
       );
     }
 
@@ -22,10 +22,9 @@ const tokenDecode = (req) => {
 
 const auth = async (req, res, next) => {
   const tokenDecoded = tokenDecode(req);
-
   if (!tokenDecoded) return res.status(401).json({ status: 401, message: "Unauthorized"});
 
-  const user = await userModel.findById(tokenDecoded.data);
+  const user = await User.findById(tokenDecoded.id);
 
   if (!user) return res.status(401).json({ status: 401, message: "Unauthorized"});
 

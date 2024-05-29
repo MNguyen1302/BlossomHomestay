@@ -6,7 +6,7 @@ import Listings from "../components/Listings";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="relative overflow-hidden">
       <Navbar />
       <Slide />
       <Categories />

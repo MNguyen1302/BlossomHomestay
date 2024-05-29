@@ -12,7 +12,7 @@ const Navbar = () => {
 
   const dispatch = useDispatch();
   return (
-    <div className="px-14 py-3 flex justify-between items-center relative sm:px-5">
+    <div className="px-14 py-3 flex justify-between items-center sm:px-5">
       <a href="/">
         <img className="w-[100px] cursor-pointer" src={logo} alt="Logo" />
       </a>
@@ -47,7 +47,7 @@ const Navbar = () => {
         </button>
 
         {dropdownMenu && !user && (
-          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-50 sm:right-5">
+          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-[9999] sm:right-5">
             <Link className="w-[100%] px-4 py-2 no-underline" to="/login">
               Login
             </Link>
@@ -58,7 +58,7 @@ const Navbar = () => {
         )}
 
         {dropdownMenu && user && (
-          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-50 sm:right-5">
+          <div className="absolute bg-white right-[60px] top-[80px] flex flex-col w-[200px] py-3 border border-solid border-gray-200 rounded-3xl shadow-xl z-[9999] sm:right-5">
             <Link className="w-[100%] px-4 py-2 no-underline" to="/trip-list">
               Trip List
             </Link>

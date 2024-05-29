@@ -123,7 +123,6 @@ const CreatePlace = () => {
       amenities.forEach((amenity) => {
         placeForm.append("amenities", amenity);
       });
-      console.log(formLocation);
       const response = await placeApi.createPlace(placeForm);
 
       if (response.status === 200) navigate("/");
@@ -135,7 +134,7 @@ const CreatePlace = () => {
     <>
       <Navbar />
       <div className="bg-gray-100 px-32 pt-10 pb-14">
-        <h1 className="text-slate-800 text-4xl font-medium">
+        <h1 className="text-slate-800 text-[36px] font-medium">
           Publish Your Place
         </h1>
         <form onSubmit={handlePost}>
